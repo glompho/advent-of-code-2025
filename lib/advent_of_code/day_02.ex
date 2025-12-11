@@ -1,11 +1,6 @@
 defmodule AdventOfCode.Day02 do
-  def all_identical?(enum) do
-    case Enum.at(enum, 0) do
-      # empty enum → treat as identical
-      nil -> true
-      first -> Enum.all?(enum, &(&1 == first))
-    end
-  end
+  def all_identical?([hd | rest]), do: Enum.all?(rest, &(&1 == hd))
+  def all_identical?([]), do: true
 
   def check_invalid(number) do
     str = Integer.to_string(number)
