@@ -1,15 +1,4 @@
 defmodule AdventOfCode.Day04 do
-  def sum_rolls({x, y}, grid) do
-    directions = [{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}]
-
-    Enum.reduce(directions, 0, fn {dx, dy}, total ->
-      case grid[{x + dx, y + dy}] do
-        "@" -> total + 1
-        _ -> total
-      end
-    end)
-  end
-
   def make_grid(input) do
     input
     |> String.split(["\n", "\r"], trim: true)
@@ -23,14 +12,21 @@ defmodule AdventOfCode.Day04 do
     |> Map.new()
   end
 
+  def sum_rolls({x, y}, grid) do
+    directions = [{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}]
+
+    Enum.reduce(directions, 0, fn {dx, dy}, total ->
+      case grid[{x + dx, y + dy}] do
+        "@" -> total + 1
+        _ -> total
+      end
+    end)
+  end
+
   def count_and_mark(grid) do
     Enum.reduce(Map.keys(grid), {0, grid}, fn {x, y}, {total, new_grid} ->
-      if grid[{x, y}] == "@" do
-        if sum_rolls({x, y}, grid) < 4 do
-          {total + 1, Map.put(new_grid, {x, y}, ".")}
-        else
-          {total, new_grid}
-        end
+      if grid[{x, y}] == "@" and sum_rolls({x, y}, grid) < 4 do
+        {total + 1, Map.put(new_grid, {x, y}, ".")}
       else
         {total, new_grid}
       end
@@ -38,10 +34,7 @@ defmodule AdventOfCode.Day04 do
   end
 
   def part1(input) do
-    grid = make_grid(input)
-
-    {count, _new_grid} = count_and_mark(grid)
-    count
+    input |> make_grid() |> count_and_mark() |> elem(0)
   end
 
   def reduce_grid(grid, total \\ 0) do
@@ -52,7 +45,6 @@ defmodule AdventOfCode.Day04 do
   end
 
   def part2(input) do
-    grid = make_grid(input)
-    reduce_grid(grid)
+    input |> make_grid() |> reduce_grid()
   end
 end
